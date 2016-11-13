@@ -12,6 +12,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.CommandLineRunner;
@@ -21,9 +22,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class App {
+public class BookOrderApp {
 	public static void main(String[] args) {
-		SpringApplication.run(App.class, args);
+		SpringApplication.run(BookOrderApp.class, args);
 	}
 	
 	@Bean
@@ -60,27 +61,30 @@ public class App {
 	@Bean
 	CommandLineRunner init( final RepositoryService repositoryService,
 	                              final RuntimeService runtimeService,
-	                              final TaskService taskService) {
+	                              final TaskService taskService,
+	                              final IdentityService identityService) {
 
 	    return new CommandLineRunner() {
 
 	        public void run(String... strings) throws Exception {
 	            Map<String, Object> variables = new HashMap<String, Object>();
-	            variables.put("applicantName", "John Doe");
-	            variables.put("email", "john.doe@activiti.com");
-	            variables.put("phoneNumber", "123456789");
-	            runtimeService.startProcessInstanceByKey("hireProcess", variables);
+	            variables.put("isbn", "1234");
 	            
-	            List<Task> tasks = taskService.createTaskQuery().taskName("Telephone interview").list();
+	            identityService.setAuthenticatedUserId("admin");
 	            
-	            System.out.println("Task 0: " + tasks.get(0).getName());
+	            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("bookOrder", variables);
 	            
-	            tasks = null;
-	            tasks = taskService.createTaskQuery().taskCandidateUser("admin").list();
+	            if (processInstance == null) {
+	            	System.out.println("failed to start procxess instance");
+	            }
 
-	            System.out.println("Tasks for candidate user: " + tasks.get(0).getName());
+	            // Doesn't get assigned to admin yet
 	            
-	            System.out.println("Task: "  + tasks.get(0).toString());
+//	            List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("admin").list();
+//	            
+//	            System.out.println("Task 0: " + tasks.get(0).getName());
+//	            
+//	            taskService.complete(tasks.get(0).getId());
 	            
 	        }
 	    };

@@ -31,10 +31,6 @@
 			<version>${activiti.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring-boot-starter-rest-api</artifactId>
 			<!--<artifactId>spring-boot-starter-rest-api</artifactId> -->
@@ -72,6 +68,16 @@
 			</exclusions>
 		</dependency>
 
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>9.4.1212</version>
+</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>8.0.15</version>
+		</dependency>
 	</dependencies>
 
 	<build>
